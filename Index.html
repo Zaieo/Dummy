@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZeedTest</title>
+    <link rel="icon" href="Logo.png"> 
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1 id="page-title">ZeedTest</h1>
+        <img src="logo.png"  class="logo">
+        <nav role="navigation">
+            <ul>
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="PrivacyPolicy.html">PrivacyPolicy</a></li>
+                <li>
+                    <label for="language">Language:</label>
+                    <select id="language" onchange="changeLanguage()">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container" id="home">
+        <section class="loader-widget">
+            <h2>CHECK YOUR SPEED TEST</h2>
+            <span class="loader hide" aria-hidden="true"></span>
+            <div class="loader-content">
+                <div class="content hide" aria-live="polite"></div>
+                <button aria-label="Start speed test" tabindex="0" type="button">CHECK</button>
+                <div class="error-message hide" aria-live="assertive"></div>
+            </div>
+            <div class="history-button-container">
+                <button id="history-button" aria-label="Show speed history">History</button>
+            </div>
+            <div class="speed-history">
+                <h3>Speed Test History</h3>
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Download Speed (Mbps)</th>
+                            <th>Upload Speed (Mbps)</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                    <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script>
+        const texts = {
+            en: {
+                title: "ZeedTest",
+                button: "CHECK",
+                loading: "Testing your speed...",
+                error: "Error loading speed test. Please try again.",
+                download: "Download Speed: ",
+                upload: "Upload Speed: "
+            },
+            es: {
+                title: "ZeedTest",
+                button: "VERIFICAR",
+                loading: "Probando tu velocidad...",
+                error: "Error al cargar la prueba de velocidad. Por favor, inténtalo de nuevo.",
+                download: "Velocidad de Descarga: ",
+                upload: "Velocidad de Carga: "
+            },
+            fr: {
+                title: "ZeedTest",
+                button: "VÉRIFIER",
+                loading: "Test de votre vitesse...",
+                error: "Erreur lors du chargement du test de vitesse. Veuillez réessayer.",
+                download: "Vitesse de Téléchargement : ",
+                upload: "Vitesse de Téléversement : "
+            }
+        };
+
+        const historyList = [];
+        let testCount = 0;
+
+        function changeLanguage() {
+            const lang = document.getElementById('language').value;
+            localStorage.setItem('preferredLanguage', lang);
+            updateLanguageTexts(lang);
+        }
+
+        function updateLanguageTexts(lang) {
+            document.getElementById('page-title').textContent = texts[lang].title;
+            document.querySelector('button[aria-label="Start speed test"]').textContent = texts[lang].button;
+            document.querySelector('.error-message').textContent = '';
+        }
+
+        window.onload = function() {
+            const storedLang = localStorage.getItem('preferredLanguage') || 'en';
+            document.getElementById('language').value = storedLang;
+            updateLanguageTexts(storedLang);
+        };
+
+        document.getElementById('history-button').addEventListener('click', () => {
+            const historyContainer = document.querySelector('.speed-history');
+            const historyBody = document.getElementById('history-body');
+
+            if (historyContainer.classList.contains('hide')) {
+                historyContainer.classList.remove('hide');
+                historyBody.innerHTML = ''; // Clear previous entries
+                historyList.forEach((entry, index) => {
+                    const row = document.createElement('tr');
+                    const date = new Date().toLocaleString();
+                    row.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${entry.download} Mbps</td>
+                        <td>${entry.upload} Mbps</td>
+                        <td>${date}</td>
+                    `;
+                    historyBody.appendChild(row);
+                });
+            } else {
+                historyContainer.classList.add('hide');
+            }
+        });
+
+        document.querySelector('button[aria-label="Start speed test"]').addEventListener('click', async (e) => {
+            const lang = document.getElementById('language').value;
+            const contentDiv = document.querySelector('.content');
+            const loader = document.querySelector('.loader');
+            const loaderContent = document.querySelector('.loader-content');
+            const button = e.target;
+            const errorMessage = document.querySelector('.error-message');
+
+            button.textContent = texts[lang].loading;
+            button.setAttribute('aria-disabled', 'true');
+            button.disabled = true;
+
+            loaderContent.classList.add('hide');
+            loader.classList.remove('hide');
+            contentDiv.textContent = texts[lang].loading;
+            contentDiv.classList.remove('hide');
+            errorMessage.textContent = '';
+
+            try {
+                const downloadSpeed = await measureDownloadSpeed();
+                contentDiv.innerHTML = `<span class="success">${texts[lang].download} <i class="fa-solid fa-arrow-down download-icon"></i>${downloadSpeed}<small> Mbps</small></span>`;
+                contentDiv.classList.add('show');
+
+                const uploadSpeed = await measureUploadSpeed();
+                historyList.push({ download: downloadSpeed, upload: uploadSpeed });
+                testCount++; // Increment the test number
+
+                setTimeout(() => {
+                    contentDiv.innerHTML += `<br><span class="success">${texts[lang].upload} <i class="fa-solid fa-upload upload-icon"></i>${uploadSpeed}<small> Mbps</small></span>`;
+                    contentDiv.classList.add('show');
+                }, 3000); // Delay of 3 seconds
+            } catch (error) {
+                errorMessage.textContent = texts[lang].error + (error.message ? ` (${error.message})` : '');
+                contentDiv.innerHTML = `<span class="error">${texts[lang].error}</span>`;
+            } finally {
+                loader.classList.add('hide');
+                loaderContent.classList.remove('hide');
+
+                button.textContent = texts[lang].button;
+                button.setAttribute('aria-disabled', 'false');
+                button.disabled = false;
+            }
+        }); 
+
+        async function measureDownloadSpeed() {
+            const imageLink = 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Tokyo_Sky_Tree_2012_%E2%85%A5.JPG';
+            const downloadSize = 8185374; // Size in bytes
+            let time_start, time_end, downloadSrc = new Image();
+
+            time_start = new Date().getTime();
+            downloadSrc.src = imageLink + '?random=' + Math.random(); // Prevent caching
+            return new Promise((resolve, reject) => {
+                downloadSrc.onload = function() {
+                    time_end = new Date().getTime();
+                    const duration = (time_end - time_start) / 1000; // Duration in seconds
+                    const speed = (downloadSize / duration) / 1048576; // Speed in Mbps
+                    resolve(speed.toFixed(2));
+                };
+                downloadSrc.onerror = reject;
+            });
+        }
+
+        async function measureUploadSpeed() {
+            const uploadSize = 500000; // Size in bytes
+            const blob = new Blob([new Uint8Array(uploadSize)], { type: 'application/octet-stream' });
+            const formData = new FormData();
+            formData.append('file', blob, 'speed-test-file.dat');
+
+            const startTime = new Date().getTime();
+            return new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', 'YOUR_UPLOAD_ENDPOINT'); // Replace with your upload endpoint
+                xhr.onload = () => {
+                    const endTime = new Date().getTime();
+                    const duration = (endTime - startTime) / 1000; // Duration in seconds
+                    const speed = (uploadSize / duration) / 1048576; // Speed in Mbps
+                    resolve(speed.toFixed(2));
+                };
+                xhr.onerror = reject;
+                xhr.send(formData);
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+

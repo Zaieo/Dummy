@@ -1,0 +1,433 @@
+:root {
+    --primary-bg: #37474f;  /* Dark gray-blue */
+    --primary-color: #90a4ae; /* Light gray-blue */
+    --button-bg: linear-gradient(145deg, #455a64, #90a4ae); /* Gradient for depth */
+    --button-disabled-bg: #b0bec5; /* Lighter gray */
+    --text-color: #000000;    /* Black text */
+    --success-color: #4caf50; /* Green for success messages */
+    --error-color: #f44336;   /* Red for error messages */
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+h1 {
+    color: #81ecec; /* Change color to your desired color */
+    text-align: center;
+    margin: 10px 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    background: linear-gradient(45deg,#14222e,#2c3c4a);
+    color: var(--text-color);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Space between logo and nav */
+    background: linear-gradient(to left, #455a64, #37474f);
+    padding: 20px;
+    position: relative;
+}
+
+.nav-container {
+    margin-left: auto; /* Pushes the nav to the right */
+}
+
+.logo {
+    height: 50px; /* Adjust as needed */
+    margin-left: 15px; /* Optional: space from the title */
+}
+
+
+header h1 {
+    text-align: center; /* Align text to the left */
+    margin: 0; /* Remove margin if needed */
+    padding-left: 20px; /* Add padding for spacing from the edge */
+}
+
+h1 {
+    position: absolute; /* Position title absolutely */
+    left: 50%; /* Move to center horizontally */
+    transform: translateX(-50%); /* Center the title */
+    color: white; /* Title color */
+    margin: 0; /* Remove default margin */
+    text-align: center; /* Center text */
+}
+
+nav {
+    text-align: center;
+    color: white; 
+}
+
+nav ul {
+    display: flex; /* Use flex for horizontal layout */
+    list-style: none;
+    margin: 0; /* Remove default margin */
+    padding: 0; /* Remove default padding */
+}
+
+nav ul li {
+    margin: 0 15px; /* Space between nav items */
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: white; /* Ensure text is visible */
+    font-size: 18px; /* Increase font size */
+}
+
+nav ul li a:hover,
+nav ul li a.active {
+    text-decoration: underline;
+    color: #81ecec; /* Change color on hover */
+    transform: scale(1.1); /* Slightly increase font size on hover */
+}
+
+.hide {
+    display: none !important;
+}
+
+/* History Button Styles */
+#history-button {
+    background-color: var(--primary-bg); /* Dark gray-blue background */
+    color: white; /* White text color */
+    padding: 10px 20px; /* Add some padding */
+    border: none; /* Remove default border */
+    border-radius: 5px; /* Slightly rounded corners */
+    font-size: 16px; /* Font size */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+/* Hover Effect */
+#history-button:hover {
+    background-color: #1f3c4e; /* Change background color on hover */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+/* Disabled State */
+#history-button:disabled {
+    background-color: var(--button-disabled-bg); /* Lighter gray */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+
+.container {
+    position: relative;
+    display: inline-block;
+    padding: 32px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(45deg, transparent 50%, rgba(255,255,255,0.08));
+    background-color: #223140;
+    border-radius: 24px;
+    text-align: center;
+    box-shadow: -16px 16px 16px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 40px;
+}
+
+.loader-widget {
+    width: 350px;
+    height: 420px;
+}
+
+.loader {
+    position: relative;
+    display: inline-block;
+    height: 240px;
+    width: 240px;
+    margin-top: 90px;
+    border-radius: 50%;
+    background: conic-gradient(rgba(1, 182, 190, 0.3) 0%, transparent 65%);
+    animation: radarRotate 2s linear infinite;
+}
+
+@keyframes radarRotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader::before {
+    content: '';
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: 0;
+    left: calc(50% - 8px);
+    border: 8px solid transparent;
+    border-top: 120px solid #81ecec;
+    filter: drop-shadow(0 0 12px #01b6be);
+}
+
+.loader-widget h2 {
+    line-height: 1.4;
+    margin-bottom: 32px;
+    color: #aaffff;
+    text-shadow: 0 0 8px #81ecec;
+    font-weight: bold;
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.loader-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+}
+
+.loader-content .content {
+    font-size: 18px;
+    line-height: 1.5;
+    margin: 0;
+    padding: 10px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    background-color: #eaeaea;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease, transform 0.2s;
+    color: #000000;
+    font-weight: bold;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInUp 0.5s forwards;
+}
+
+.loader-content .content.success {
+    border-color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.1);
+}
+
+.loader-content .content.error {
+    border-color: #f44336;
+    background-color: rgba(244, 67, 54, 0.1);
+}
+
+.loader-content .content small {
+    font-size: 14px;
+    color: #555;
+}
+
+.loader-content button {
+    position: relative;
+    cursor: pointer;
+    height: 240px;
+    width: 240px;
+    margin: 20px 0;
+    border: none;
+    border-radius: 50%;
+    background-color: #223140;
+    color: #eaeaea;
+    font-size: 24px;
+    font-weight: bold;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+    box-shadow: 0 0 12px #81ecec;
+}
+
+.loader-content button:disabled {
+    background-color: #1f3c4e;
+    cursor: not-allowed;
+}
+
+.loader-content button:hover {
+    background-color: #1f3c4e;
+    transform: translateY(-2px) scale(1.05);
+}
+
+.error-message {
+    color: #000000;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+}
+.speed-history {
+    width: 400px; /* Set width */
+    height: 162px; /* Set height */
+    margin: 40px 0;
+    padding: 20px;
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
+    background: none; /* Remove background */
+    color: white; /* Retain text color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: keep shadow if desired */
+}
+
+.speed-history h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #aaffff;
+    text-align: left;
+}
+
+#history-table {
+    width: 100%;
+    border-collapse: collapse; /* Ensures borders are combined */
+}
+
+#history-table th, #history-table td {
+    padding: 12px; /* Spacing in table cells */
+    text-align: left;
+    border-bottom: 1px solid var(--primary-color);
+    word-wrap: break-word; /* Allow long words to break */
+}
+
+#history-table th {
+    background-color: #37474f;
+    color: #aaffff;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+#history-table tr {
+    transition: box-shadow 0.3s;
+}
+
+#history-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Highlight row on hover */
+}
+
+#history-table td {
+    color: #eaeaea; /* Table text color */
+    transition: background-color 0.3s; /* Smooth transition for hover effects */
+}
+
+
+/* Icon Styles */
+.icon {
+    color: #4CAF50; /* Default color for icons */
+    margin-right: 8px; /* Spacing between icon and text */
+    vertical-align: middle; /* Aligns icon with text */
+}
+
+.download-icon {
+    color: #2196F3; /* Blue color for download icon */
+}
+
+.upload-icon {
+    color: #FF9800; /* Orange color for upload icon */
+}
+
+/* Animation Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .loader-widget {
+        width: 90%;
+        height: auto;
+    }
+    h1 {
+        font-size: 1.5em;
+    }
+    .loader-content button {
+        height: 150px;
+        width: 150px;
+        font-size: 20px;
+    }
+    .loader {
+        height: 150px;
+        width: 150px;
+    }
+}
+
+/* Subpage Styles */
+.subpage-header {
+    background: linear-gradient(to right, #455a64, #37474f);
+    padding: 20px;
+    text-align: center;
+}
+
+.subpage-header h2 {
+    color: #aaffff; /* Header color */
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.subpage-header p {
+    color: #eaeaea; /* Text color */
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.subpage-content {
+    max-width: 800px; /* Limit width for better readability */
+    margin: 20px auto; /* Center the content */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.subpage-footer {
+    text-align: center;
+    margin-top: 40px;
+    color: #aaffff; /* Footer text color */
+}
+
+
+
+/*Subpage*/
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #223140; /* Dark background */
+    color: #aaffff; /* Light text color */
+}
+
+main {
+    padding: 20px;
+    max-width: 800px;
+    margin: 20px auto;
+    background: #2a3a4a; /* Slightly lighter for contrast */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 8px;
+}
+
+h1, h2, h3 {
+    margin: 10px 0;
+    color: #aaffff; /* Consistent text color for headings */
+}
+
+section {
+    margin-bottom: 20px;
+}
+
+ul {
+    margin: 10px 0;
+    padding-left: 20px;
+    color: #aaffff; /* Ensure list text is the same color */
+}
+
+p {
+    color: #e0f7fa; /* Slightly brighter color for paragraph text */
+}
+
